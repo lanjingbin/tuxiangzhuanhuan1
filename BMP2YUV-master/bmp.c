@@ -1,38 +1,27 @@
 #include "bmp.h"
+#include <math.h> 
 
-
-/*
-	输入参数：
-		bmpfilename：bmp文件名；
-		yuvfilename：yuv文件名
-		yuvmode：yuv的格式
-	功能：将bmp文件转换为yuv格式，模式可选
-	返回值：无
-*/
-
-void get_bmpdata(char * bmpfilename,char * yuvfilename, char yuvmode)
+void get_bmpdata( char * bmpfilename, char * yuvfilename, char yuvmode)
 {
 	FILE * fp, *fv;
 	int i;
-	WORD lineSize;				//一行的字节个数
-	BMPFileHead bfh;			//定义文件头信息
-	BMPHeaderInfo bhi;			//定义bmp头信息
-	//bmp有单色，16色，256色和24位无调色板四种模式。
-	//色板作为数据的颜色映射（直接映射表项），不改动，访问频率高，所以采用数组来存储
+	WORD lineSize;				
+	BMPFileHead bfh;			
+	BMPHeaderInfo bhi;			
 	RGB  color[256]={0};		
-	YUV  yuvcolor[256]={0};		//RGB的YUV映射
-	BYTE * databuf;				//数据缓存
+	YUV  yuvcolor[256]={0};		
+	BYTE * databuf;				
 
 	if((fp = fopen(bmpfilename, "r+b"))== NULL){
 		printf("open bmpfile error!\n");
 		exit(EXIT_FAILURE);
 	}
-	//读取文件头信息
+	
 	if ((fread(&bfh,sizeof(WORD), 7, fp)) < 7){
 		printf("read file error!\n");
 		exit(EXIT_FAILURE);
 	}
-	//读取位图信息头
+	
 	if ((fread(&bhi,sizeof(WORD),20 , fp)) < 20){
 		printf("read file error!\n");
 		exit(EXIT_FAILURE);
@@ -41,7 +30,7 @@ void get_bmpdata(char * bmpfilename,char * yuvfilename, char yuvmode)
 		printf("the size of picture is wrong!\n");
 		exit(EXIT_FAILURE);
 	}
-	//如果不是24位色则获取调色板
+	
 	if (bhi.biBitCount != 0x18){
 		for (i=0;i<pow(2,bhi.biBitCount);i++){
 			fread(&(color[i]),sizeof(BYTE), 4, fp);
@@ -759,6 +748,7 @@ void writeyuv24(FILE *fv, BYTE databuf[], int yuvmode,BMPHeaderInfo bhi)
 	DWORD lineSize = bhi.biSizeImage/bhi.biHeight;
 
 	if (yuvmode == '0'){
+		
 		for (i=0; i<bhi.biSizeImage; i=i+3){
 			yuv24.yuvY = 0.257*databuf[i+2] + \
 				0.504*databuf[i+1] + 0.098*databuf[i] + 16;
@@ -921,3 +911,5 @@ void calculateYUV(YUV *yuvcolor,RGB rgbcolor )
 	yuvcolor->yuvV = 0.439*rgbcolor.rgbRed - \
 		0.368*rgbcolor.rgbGreen - 0.071*rgbcolor.rgbBlue + 128;
 }
+
+

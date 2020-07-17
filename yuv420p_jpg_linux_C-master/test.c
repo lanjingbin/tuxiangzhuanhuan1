@@ -4,6 +4,7 @@
 #include <malloc.h>
 #include <errno.h>
 #include "yuv2jpg.h"
+FILE *fp;
 
 int get_Y_U_V(unsigned char*rData,unsigned char* in_Y,unsigned char* in_U,unsigned char* in_V,int nStride,int height)
 {
@@ -34,7 +35,7 @@ int get_Y_U_V(unsigned char*rData,unsigned char* in_Y,unsigned char* in_U,unsign
 		i++;
 	}
 	#endif
-	//使用yuv420格式读取yu不连续放置
+
 	#if 1
 	while(i < 1280*720)
 	{
@@ -56,8 +57,6 @@ int get_Y_U_V(unsigned char*rData,unsigned char* in_Y,unsigned char* in_U,unsign
 	
 	}
 	#endif
-
-	//使用yuv420格式读取yu连续放置
 	#if 0
 	while(i < 1280*720)
 	{
@@ -102,7 +101,7 @@ int main()
 	free(rData);
 
 	YUV2Jpg(in_Y,in_U,in_V,1280,720,100,1280,pData,&dwSize);
-	FILE *fp = fopen("2.jpg","wb");
+	fp = fopen("2.jpg","wb");
 	fwrite(pData,dwSize,1,fp);
 	fclose(fp);
 		

@@ -8,8 +8,8 @@
 
 typedef unsigned char BYTE ;
 typedef unsigned short WORD;
-typedef unsigned long DWORD;
-typedef long LONG;
+typedef unsigned int DWORD;
+typedef int LONG;
 #pragma pack(1)
 typedef struct  {  
 	WORD bfType;			/* 说明文件的类型 */  
